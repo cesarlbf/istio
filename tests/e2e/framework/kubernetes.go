@@ -329,8 +329,11 @@ func (k *KubeInfo) Setup() error {
 			}
 		} else {
 			if err = k.deployIstio(); err != nil {
-				log.Error("Failed to deploy Istio.")
-				return err
+				log.Error("Failed to deploy Istio. 1st time")				
+				if err = k.deployIstio(); err != nil {
+					log.Error("Failed to deploy Istio. 2nd time")
+					return err
+				}				
 			}
 		}
 		// Create the ingress secret.
