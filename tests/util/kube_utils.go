@@ -57,6 +57,22 @@ var (
 	}
 )
 
+var podsWaitTimeout = getPodsWaitTimeout()
+
+func getPodsWaitTimeout() int {
+	defaultValue := 2
+	result := defaultValue
+	envValue  := os.Getenv("ISTIO_PODS_WAIT")
+	if envValue != "" {
+		convertedValue, err := strconv.Atoi(envValue)
+		if err == nil {
+			result = convertedValue
+		} 		
+	}
+	return result
+}
+
+
 // Fill complete a template with given values and generate a new output file
 func Fill(outFile, inFile string, values interface{}) error {
 	tmpl, err := template.ParseFiles(inFile)
@@ -508,7 +524,7 @@ func CheckPodsRunningWithMaxDuration(n string, maxDuration time.Duration, kubeco
 // CheckPodsRunning returns readiness of all pods within a namespace. It will wait for upto 2 mins.
 // use WithMaxDuration to specify a duration.
 func CheckPodsRunning(n string, kubeconfig string) (ready bool) {
-	return CheckPodsRunningWithMaxDuration(n, 2*time.Minute, kubeconfig)
+	return CheckPodsRunningWithMaxDuration(n, podsWaitTimeout*time.Minute, kubeconfig)
 }
 
 // CheckDeployment gets status of a deployment from a namespace
