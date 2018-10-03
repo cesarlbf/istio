@@ -59,7 +59,7 @@ var (
 
 var podsWaitTimeout = getPodsWaitTimeout()
 
-func getPodsWaitTimeout() int {
+func getPodsWaitTimeout() time.Duration {
 	defaultValue := 2
 	result := defaultValue
 	envValue  := os.Getenv("ISTIO_PODS_WAIT")
@@ -69,7 +69,7 @@ func getPodsWaitTimeout() int {
 			result = convertedValue
 		} 		
 	}
-	return result
+	return time.Duration(result)
 }
 
 
